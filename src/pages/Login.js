@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { playerLoginInputs, getToken  } from '../redux/actions';
+import { playerLoginInputs, getToken } from '../redux/actions';
 
 class Login extends React.Component {
   constructor() {
@@ -87,6 +87,7 @@ class Login extends React.Component {
 
 Login.propTypes = {
   playerInfo: PropTypes.func.isRequired,
+  playerToken: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
