@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { playerLoginInputs } from '../redux/actions';
+import { getToken } from '../redux/actions';
 
 class Login extends React.Component {
   constructor() {
@@ -35,7 +36,9 @@ class Login extends React.Component {
   handleClick() {
     const { playerInfo } = this.props;
     const { player, email } = this.state;
+    const { playerToken } = this.props;
     playerInfo({ player, email });
+    playerToken();
   }
 
   render() {
@@ -89,6 +92,7 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   playerInfo: (info) => dispatch(playerLoginInputs(info)),
+  playerToken: () => dispatch(getToken()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);

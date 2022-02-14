@@ -15,6 +15,7 @@ export const getToken = () => async (dispatch) => {
   fetch('https://opentdb.com/api_token.php?command=request')
     .then((response) => response.json())
     .then((data) => {
+      localStorage.setItem('token', JSON.stringify(data.token));
       dispatch(updateToken(data));
     });
 };
