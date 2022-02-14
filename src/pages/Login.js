@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Header from '../components/Header';
 import { playerLoginInputs } from '../redux/actions';
 
 class Login extends React.Component {
@@ -42,7 +41,6 @@ class Login extends React.Component {
     const { player, email, isDisabled } = this.state;
     return (
       <main>
-        <Header />
         <form
           onSubmit={ (e) => {
             e.preventDefault();
