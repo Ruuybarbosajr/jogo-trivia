@@ -12,8 +12,8 @@ const player = (state = INITIAL_STATE, action) => {
   case PLAYER_LOGIN:
     return {
       ...state,
-      name: action.payload,
-      gravatarEmail: action.payload,
+      name: action.payload.player,
+      gravatarEmail: action.payload.email,
     };
   default:
     return state;
