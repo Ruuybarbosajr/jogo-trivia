@@ -22,7 +22,8 @@ class Question extends Component {
       setIntervalId: null,
     };
     this.setColors = this.setColors.bind(this);
-    this.handleStyle = this.handleClick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.saveLocalStorage = this.saveLocalStorage.bind(this);
   }
 
   componentDidMount() {
@@ -56,6 +57,20 @@ class Question extends Component {
     return 'wrongAnswer';
   }
 
+  saveLocalStorage() {
+    const { name, score, picture } = this.props;
+    if (!localStorage.getItem('ranking')) {
+      localStorage.setItem('ranking', JSON.stringify(
+        [{ name, score, picture }],
+      ));
+    } else {
+      const prevRanking = JSON.parse(localStorage.getItem('ranking'));
+      localStorage.setItem('ranking', JSON.stringify(
+        [...prevRanking, { name, score, picture }],
+      ));
+    }
+  }
+
   handleClick(target) {
     this.setState({
       isStyled: true,
@@ -66,7 +81,9 @@ class Question extends Component {
       const { timer } = this.state;
       const totalPoints = SCORE_RIGHT_ANSWER + (timer * SCORE_BOARD[question.difficulty]);
       sendScore(totalPoints);
+      this.saveLocalStorage();
     }
+    this.saveLocalStorage();
   }
 
   render() {
@@ -118,4 +135,10 @@ const mapDispatchToProps = (dispatch) => ({
   sendScore: (totalPoints) => dispatch(updateScore(totalPoints)),
 });
 
-export default connect(null, mapDispatchToProps)(Question);
+const mapStateToProps = (state) => ({
+  name: state.player.name,
+  score: state.player.score,
+  picture: state.player.picture,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Question);
