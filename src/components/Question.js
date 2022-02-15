@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import randomOrder from '../helpers/radomOrder';
+import './Questions.css';
 
 class Question extends Component {
   constructor() {
@@ -9,7 +10,10 @@ class Question extends Component {
     this.state = {
       answers: [],
       correctAnswer: '',
+      isStyled: false,
     };
+    this.setColors = this.setColors.bind(this);
+    this.handleStyle = this.handleStyle.bind(this);
   }
 
   componentDidMount() {
@@ -22,9 +26,23 @@ class Question extends Component {
     this.setState({ answers: randomOrder(type, arrQuestions), correctAnswer });
   };
 
+  setColors(answer) {
+    const { correctAnswer } = this.state;
+    if (correctAnswer === answer) {
+      return 'correctAnswer';
+    }
+    return 'wrongAnswer';
+  }
+
+  handleStyle() {
+    this.setState({
+      isStyled: true,
+    });
+  }
+
   render() {
     const { question } = this.props;
-    const { answers, correctAnswer } = this.state;
+    const { answers, correctAnswer, isStyled } = this.state;
     return (
       <section>
         <h2 data-testid="question-category">{ question.category }</h2>
@@ -37,6 +55,8 @@ class Question extends Component {
               data-testid={ answer === correctAnswer
                 ? 'correct-answer'
                 : `wrong-answer-${index}` }
+              onClick={ this.handleStyle }
+              className={ isStyled ? this.setColors(answer) : '' }
             >
               {answer}
             </button>
