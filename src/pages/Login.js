@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
-import { playerLoginInputs, getToken } from '../redux/actions';
+import { Redirect } from 'react-router-dom';
+import { playerLoginInputs, updateToken } from '../redux/actions';
+import { fetchToken } from '../services/fetchs';
 
 class Login extends React.Component {
   constructor() {
@@ -32,15 +33,13 @@ class Login extends React.Component {
     });
   }
 
-  handleClick() {
+  async handleClick() {
     const { playerInfo } = this.props;
     const { player, email } = this.state;
     const { playerToken } = this.props;
     playerInfo({ player, email });
-    playerToken();
-    this.setState({
-      isLogged: true,
-    });
+    playerToken(await fetchToken());
+    this.setState({ isLogged: true });
   }
 
   render() {
@@ -49,9 +48,7 @@ class Login extends React.Component {
     return (
       <main>
         <form
-          onSubmit={ (e) => {
-            e.preventDefault();
-          } }
+          onSubmit={ (e) => e.preventDefault() }
         >
           <label htmlFor="name-input">
             <input
@@ -95,7 +92,7 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   playerInfo: (info) => dispatch(playerLoginInputs(info)),
-  playerToken: () => dispatch(getToken()),
+  playerToken: (token) => dispatch(updateToken(token)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
