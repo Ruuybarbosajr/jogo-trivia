@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Question from '../components/Question';
 import { fetchQuestions, fetchToken } from '../services/fetchs';
 import { updateToken } from '../redux/actions';
+// import Timer from '../components/Timer';
 
 const RESQUEST_FAIL = 3;
 
