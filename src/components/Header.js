@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import fetchImage from '../services/api';
+import md5 from 'crypto-js/md5';
 
 class Header extends React.Component {
   constructor() {
@@ -9,11 +9,17 @@ class Header extends React.Component {
     this.state = {
       urlHash: '',
     };
+    this.getAvatar = this.getAvatar.bind(this);
   }
 
   componentDidMount() {
+    this.getAvatar();
+  }
+
+  getAvatar() {
     const { email } = this.props;
-    fetchImage(email).then((urlHash) => this.setState({ urlHash }));
+    const HASH = md5(email).toString();
+    this.setState({ urlHash: HASH });
   }
 
   render() {
@@ -46,7 +52,7 @@ Header.propTypes = {
 
 const mapStateToProps = (state) => ({
   player: state.player.name,
-  email: state.player.email,
+  email: state.player.gravatarEmail,
 });
 
 export default connect(mapStateToProps)(Header);
