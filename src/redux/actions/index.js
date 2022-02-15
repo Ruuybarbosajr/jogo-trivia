@@ -6,16 +6,7 @@ export const playerLoginInputs = (payload) => ({
   payload,
 });
 
-const updateToken = (payload) => ({
+export const updateToken = (payload) => ({
   type: TOKEN_REQUEST,
   payload,
 });
-
-export const getToken = () => async (dispatch) => {
-  fetch('https://opentdb.com/api_token.php?command=request')
-    .then((response) => response.json())
-    .then((data) => {
-      localStorage.setItem('token', data.token);
-      dispatch(updateToken(data));
-    });
-};
