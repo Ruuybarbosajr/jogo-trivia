@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Header from '../components/Header';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 import { playerLoginInputs, getToken } from '../redux/actions';
 
 class Login extends React.Component {
@@ -11,6 +11,7 @@ class Login extends React.Component {
       player: '',
       email: '',
       isDisabled: true,
+      isLogged: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleButton = this.handleButton.bind(this);
@@ -26,7 +27,6 @@ class Login extends React.Component {
   handleButton() {
     const { player, email } = this.state;
     const okFields = player && email !== '';
-    console.log(okFields);
     this.setState({
       isDisabled: !okFields,
     });
@@ -38,13 +38,16 @@ class Login extends React.Component {
     const { playerToken } = this.props;
     playerInfo({ player, email });
     playerToken();
+    this.setState({
+      isLogged: true,
+    });
   }
 
   render() {
-    const { player, email, isDisabled } = this.state;
+    const { player, email, isDisabled, isLogged } = this.state;
+    if (isLogged) return <Redirect to="/game" />;
     return (
       <main>
-        <Header />
         <form
           onSubmit={ (e) => {
             e.preventDefault();
