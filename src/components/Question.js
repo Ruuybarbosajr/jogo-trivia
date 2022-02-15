@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import randomOrder from '../helpers/radomOrder';
+import { updateScore } from '../redux/actions';
 import './Questions.css';
 
 const ONE_SECOND = 1000;
+const SCORE_BOARD = { hard: 3, medium: 2, easy: 1 };
+const SCORE_RIGHT_ANSWER = 10;
 
 class Question extends Component {
   constructor() {
@@ -18,7 +22,7 @@ class Question extends Component {
       setIntervalId: null,
     };
     this.setColors = this.setColors.bind(this);
-    this.handleStyle = this.handleStyle.bind(this);
+    this.handleStyle = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -52,10 +56,17 @@ class Question extends Component {
     return 'wrongAnswer';
   }
 
-  handleStyle() {
+  handleClick(target) {
     this.setState({
       isStyled: true,
     });
+    const answer = target.getAttribute('data-testid');
+    if (answer === 'correct-answer') {
+      const { question, sendScore } = this.props;
+      const { timer } = this.state;
+      const totalPoints = SCORE_RIGHT_ANSWER + (timer * SCORE_BOARD[question.difficulty]);
+      sendScore(totalPoints);
+    }
   }
 
   render() {
@@ -73,7 +84,7 @@ class Question extends Component {
               data-testid={ answer === correctAnswer
                 ? 'correct-answer'
                 : `wrong-answer-${index}` }
-              onClick={ this.handleStyle }
+              onClick={ (event) => this.handleClick(event.target) }
               className={ isStyled ? this.setColors(answer) : '' }
               disabled={ isDisabled }
             >
@@ -98,7 +109,13 @@ Question.propTypes = {
     type: PropTypes.string.isRequired,
     category: PropTypes.string.isRequired,
     question: PropTypes.string.isRequired,
+    difficulty: PropTypes.string.isRequired,
   }).isRequired,
+  sendScore: PropTypes.func.isRequired,
 };
 
-export default Question;
+const mapDispatchToProps = (dispatch) => ({
+  sendScore: (totalPoints) => dispatch(updateScore(totalPoints)),
+});
+
+export default connect(null, mapDispatchToProps)(Question);
