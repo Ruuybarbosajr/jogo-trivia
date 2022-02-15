@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import randomOrder from '../helpers/radomOrder';
 import './Questions.css';
 
+const ONE_SECOND = 1000;
+
 class Question extends Component {
   constructor() {
     super();
@@ -11,16 +13,32 @@ class Question extends Component {
       answers: [],
       correctAnswer: '',
       isStyled: false,
+      timer: 30,
+      isDisabled: false,
+      setIntervalId: null,
     };
     this.setColors = this.setColors.bind(this);
     this.handleStyle = this.handleStyle.bind(this);
   }
 
   componentDidMount() {
+    const setIntervalId = setInterval(() => this.setState((prevState) => (
+      { timer: prevState.timer - 1, setIntervalId })), ONE_SECOND);
     const { question } = this.props;
     const arrQuestions = [...question.incorrect_answers, question.correct_answer];
     this.setAnswers(question.type, arrQuestions, question.correct_answer);
   }
+
+  componentDidUpdate(_prevProp, prevState) {
+    if (prevState.timer === 1) {
+      clearInterval(prevState.setIntervalId);
+      this.setDisabled();
+    }
+  }
+
+  setDisabled = () => {
+    this.setState({ isDisabled: true });
+  };
 
   setAnswers = (type, arrQuestions, correctAnswer) => {
     this.setState({ answers: randomOrder(type, arrQuestions), correctAnswer });
@@ -42,7 +60,7 @@ class Question extends Component {
 
   render() {
     const { question } = this.props;
-    const { answers, correctAnswer, isStyled } = this.state;
+    const { answers, correctAnswer, isStyled, isDisabled, timer } = this.state;
     return (
       <section>
         <h2 data-testid="question-category">{ question.category }</h2>
@@ -57,11 +75,17 @@ class Question extends Component {
                 : `wrong-answer-${index}` }
               onClick={ this.handleStyle }
               className={ isStyled ? this.setColors(answer) : '' }
+              disabled={ isDisabled }
             >
               {answer}
             </button>
           ))}
         </div>
+        <section>
+          TEMPO:
+          {' '}
+          {timer}
+        </section>
       </section>
     );
   }
