@@ -44,6 +44,7 @@ class Login extends React.Component {
 
   render() {
     const { player, email, isDisabled, isLogged } = this.state;
+    const { history } = this.props;
     if (isLogged) return <Redirect to="/game" />;
     return (
       <main>
@@ -80,6 +81,15 @@ class Login extends React.Component {
             Play
           </button>
         </form>
+        <button
+          data-testid="btn-settings"
+          type="button"
+          onClick={ () => {
+            history.push('/options');
+          } }
+        >
+          Configurações
+        </button>
       </main>
     );
   }
@@ -88,6 +98,9 @@ class Login extends React.Component {
 Login.propTypes = {
   playerInfo: PropTypes.func.isRequired,
   playerToken: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
