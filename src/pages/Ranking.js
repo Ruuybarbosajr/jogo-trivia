@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { zeroScore } from '../redux/actions';
 
 class Ranking extends React.Component {
   constructor() {
@@ -22,14 +24,14 @@ class Ranking extends React.Component {
   }
 
   render() {
-    const { history } = this.props;
+    const { history, clearScore } = this.props;
     const { ranking } = this.state;
     return (
       <>
         <h1 data-testid="ranking-title"> se aparece é porque funciona</h1>
         <ul>
           {ranking.sort((a, b) => b.score - a.score).map((player, index) => (
-            <li key={ player.name }>
+            <li key={ player.picture }>
               <img src={ player.picture } alt="player avatar" />
               <p data-testid={ `player-score-${index}` }>
                 {player.score}
@@ -43,7 +45,10 @@ class Ranking extends React.Component {
         <button
           type="button"
           data-testid="btn-go-home"
-          onClick={ () => history.push('/') }
+          onClick={ () => {
+            history.push('/');
+            clearScore();
+          } }
         >
           Play Again
         </button>
@@ -56,6 +61,11 @@ Ranking.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  clearScore: PropTypes.func.isRequired,
 };
 
-export default Ranking;
+const mapDispatchToProps = (dispatch) => ({
+  clearScore: () => dispatch(zeroScore()),
+});
+
+export default connect(null, mapDispatchToProps)(Ranking);

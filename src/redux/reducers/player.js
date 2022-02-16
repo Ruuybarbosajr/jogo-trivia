@@ -1,4 +1,4 @@
-import { PLAYER_LOGIN, SCORE_PLAYER, PICTURE_PLAYER } from '../actions';
+import { PLAYER_LOGIN, SCORE_PLAYER, PICTURE_PLAYER, CLEAR_SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -28,6 +28,12 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       name: action.payload.player,
       gravatarEmail: action.payload.email,
+    };
+
+  case CLEAR_SCORE:
+    return {
+      ...state,
+      score: 0,
     };
   default:
     return state;
