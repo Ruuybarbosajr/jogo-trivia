@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Question from '../components/Question';
 import { fetchQuestions, fetchToken } from '../services/fetchs';
-import { updateToken } from '../redux/actions';
-// import Timer from '../components/Timer';
+import { updateToken, showNextQuestion } from '../redux/actions';
 import './GameScreen.css';
 
 const RESQUEST_FAIL = 3;
@@ -37,13 +36,14 @@ class GameScreen extends Component {
 
   handleClick() {
     const { index } = this.state;
-    const { history } = this.props;
+    const { history, sendClick } = this.props;
     const QUATRO = 4;
     if (index === QUATRO) history.push('/feedback');
     this.setState((prevState) => ({
       index: prevState.index + 1,
       isLoading: true,
     }), () => this.setState({ isLoading: false }));
+    sendClick(false);
   }
 
   render() {
@@ -74,11 +74,13 @@ GameScreen.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  sendClick: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = ({ token, game }) => ({ token, next: game.next });
 const mapDispatchToProps = (dispatch) => ({
   getNewToken: (token) => dispatch(updateToken(token)),
+  sendClick: (bool) => dispatch(showNextQuestion(bool)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameScreen);
