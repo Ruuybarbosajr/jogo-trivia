@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import randomOrder from '../helpers/radomOrder';
-import { updateScore } from '../redux/actions';
+import { updateScore, showNextQuestion } from '../redux/actions';
 import './Questions.css';
 
 const ONE_SECOND = 1000;
@@ -22,7 +22,8 @@ class Question extends Component {
       setIntervalId: null,
     };
     this.setColors = this.setColors.bind(this);
-    this.handleStyle = this.handleClick.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.saveLocalStorage = this.saveLocalStorage.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +39,11 @@ class Question extends Component {
       clearInterval(prevState.setIntervalId);
       this.setDisabled();
     }
+  }
+
+  componentWillUnmount() {
+    const { setIntervalId } = this.state;
+    clearInterval(setIntervalId);
   }
 
   setDisabled = () => {
@@ -56,17 +62,36 @@ class Question extends Component {
     return 'wrongAnswer';
   }
 
+  saveLocalStorage() {
+    const { name, score, picture } = this.props;
+    if (!localStorage.getItem('ranking')) {
+      localStorage.setItem('ranking', JSON.stringify(
+        [{ name, score, picture }],
+      ));
+    } else {
+      const prevRanking = JSON.parse(
+        localStorage.getItem('ranking'),
+      ).filter((object) => object.name !== name);
+      localStorage.setItem('ranking', JSON.stringify(
+        [...prevRanking, { name, score, picture }],
+      ));
+    }
+  }
+
   handleClick(target) {
+    const { question, sendScore, sendClick } = this.props;
     this.setState({
       isStyled: true,
     });
     const answer = target.getAttribute('data-testid');
     if (answer === 'correct-answer') {
-      const { question, sendScore } = this.props;
       const { timer } = this.state;
       const totalPoints = SCORE_RIGHT_ANSWER + (timer * SCORE_BOARD[question.difficulty]);
       sendScore(totalPoints);
+      this.saveLocalStorage();
     }
+    this.saveLocalStorage();
+    sendClick(true);
   }
 
   render() {
@@ -112,10 +137,21 @@ Question.propTypes = {
     difficulty: PropTypes.string.isRequired,
   }).isRequired,
   sendScore: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  picture: PropTypes.string.isRequired,
+  sendClick: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   sendScore: (totalPoints) => dispatch(updateScore(totalPoints)),
+  sendClick: (bool) => dispatch(showNextQuestion(bool)),
 });
 
-export default connect(null, mapDispatchToProps)(Question);
+const mapStateToProps = (state) => ({
+  name: state.player.name,
+  score: state.player.score,
+  picture: state.player.picture,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Question);

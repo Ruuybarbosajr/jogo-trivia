@@ -1,14 +1,21 @@
-import { PLAYER_LOGIN, SCORE_PLAYER } from '../actions';
+import { PLAYER_LOGIN, SCORE_PLAYER, PICTURE_PLAYER } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
   assertions: '',
   score: 0,
   gravatarEmail: '',
+  picture: '',
 };
 
 const player = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+  case PICTURE_PLAYER:
+    return {
+      ...state,
+      picture: action.payload,
+    };
+
   case SCORE_PLAYER:
     return {
       ...state,
