@@ -40,7 +40,6 @@ class Header extends React.Component {
         <img src={ `https://www.gravatar.com/avatar/${urlHash}` } alt="avatar" data-testid="header-profile-picture" />
         <h6 data-testid="header-player-name">{player}</h6>
         <p data-testid="header-score">
-          Score:
           { score }
         </p>
       </header>

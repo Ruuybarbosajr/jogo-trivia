@@ -88,9 +88,8 @@ class Question extends Component {
       const { timer } = this.state;
       const totalPoints = SCORE_RIGHT_ANSWER + (timer * SCORE_BOARD[question.difficulty]);
       sendScore(totalPoints);
-      this.saveLocalStorage();
     }
-    this.saveLocalStorage();
+    setTimeout(() => this.saveLocalStorage(), 1);
     sendClick(true);
   }
 
