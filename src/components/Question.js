@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import randomOrder from '../helpers/radomOrder';
-import { updateScore } from '../redux/actions';
+import { updateScore, showNextQuestion } from '../redux/actions';
 import './Questions.css';
 
 const ONE_SECOND = 1000;
@@ -41,6 +41,11 @@ class Question extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { setIntervalId } = this.state;
+    clearInterval(setIntervalId);
+  }
+
   setDisabled = () => {
     this.setState({ isDisabled: true });
   };
@@ -72,18 +77,19 @@ class Question extends Component {
   }
 
   handleClick(target) {
+    const { question, sendScore, sendClick } = this.props;
     this.setState({
       isStyled: true,
     });
     const answer = target.getAttribute('data-testid');
     if (answer === 'correct-answer') {
-      const { question, sendScore } = this.props;
       const { timer } = this.state;
       const totalPoints = SCORE_RIGHT_ANSWER + (timer * SCORE_BOARD[question.difficulty]);
       sendScore(totalPoints);
       this.saveLocalStorage();
     }
     this.saveLocalStorage();
+    sendClick(true);
   }
 
   render() {
@@ -129,10 +135,15 @@ Question.propTypes = {
     difficulty: PropTypes.string.isRequired,
   }).isRequired,
   sendScore: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  picture: PropTypes.string.isRequired,
+  sendClick: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   sendScore: (totalPoints) => dispatch(updateScore(totalPoints)),
+  sendClick: (bool) => dispatch(showNextQuestion(bool)),
 });
 
 const mapStateToProps = (state) => ({
