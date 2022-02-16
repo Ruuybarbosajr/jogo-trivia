@@ -2,12 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
+import { zeroScore } from '../redux/actions';
 
 const NUMBER_ASSERTIONS = 3;
 
 class Feedback extends React.Component {
   render() {
-    const { assertions, score, history } = this.props;
+    const { assertions, score, history, clearScore } = this.props;
     return (
       <>
         <Header />
@@ -25,7 +26,10 @@ class Feedback extends React.Component {
         <button
           type="button"
           data-testid="btn-play-again"
-          onClick={ () => history.push('/') }
+          onClick={ () => {
+            history.push('/');
+            clearScore();
+          } }
         >
           Play Again
         </button>
@@ -42,16 +46,21 @@ class Feedback extends React.Component {
 }
 
 Feedback.propTypes = {
-  assertions: PropTypes.string.isRequired,
+  assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  clearScore: PropTypes.func.isRequired,
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  clearScore: () => dispatch(zeroScore()),
+});
 
 const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
   score: state.player.score,
 });
 
-export default connect(mapStateToProps, null)(Feedback);
+export default connect(mapStateToProps, mapDispatchToProps)(Feedback);

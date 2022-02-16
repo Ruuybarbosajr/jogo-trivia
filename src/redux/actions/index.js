@@ -3,6 +3,7 @@ export const TOKEN_REQUEST = 'TOKEN_REQUEST';
 export const SCORE_PLAYER = 'SCORE_PLAYER';
 export const PICTURE_PLAYER = 'PICTURE_PLAYER';
 export const SHOW_NEXT = 'SHOW_NEXT';
+export const CLEAR_SCORE = 'CLEAR_SCORE';
 
 export const playerLoginInputs = (payload) => ({
   type: PLAYER_LOGIN,
@@ -27,4 +28,8 @@ export const getUrlPicture = (payload) => ({
 export const showNextQuestion = (payload) => ({
   type: SHOW_NEXT,
   payload,
+});
+
+export const zeroScore = () => ({
+  type: CLEAR_SCORE,
 });

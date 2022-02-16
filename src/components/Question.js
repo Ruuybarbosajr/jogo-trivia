@@ -71,7 +71,7 @@ class Question extends Component {
     } else {
       const prevRanking = JSON.parse(
         localStorage.getItem('ranking'),
-      ).filter((object) => object.name !== name);
+      ).filter((object) => object.picture !== picture);
       localStorage.setItem('ranking', JSON.stringify(
         [...prevRanking, { name, score, picture }],
       ));
